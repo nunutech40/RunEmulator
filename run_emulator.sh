@@ -17,8 +17,16 @@ BOLD='\033[1m'
 DIM='\033[2m'
 NC='\033[0m' # No Color
 
-# Android SDK path
-ANDROID_SDK="${ANDROID_HOME:-$HOME/Library/Android/sdk}"
+# Android SDK path — auto-detect OS
+if [ -z "$ANDROID_HOME" ]; then
+    case "$(uname -s)" in
+        Darwin) ANDROID_SDK="$HOME/Library/Android/sdk" ;;
+        Linux)  ANDROID_SDK="$HOME/Android/Sdk" ;;
+        *)      ANDROID_SDK="$HOME/Android/Sdk" ;;
+    esac
+else
+    ANDROID_SDK="$ANDROID_HOME"
+fi
 EMULATOR_BIN="$ANDROID_SDK/emulator/emulator"
 ADB_BIN="$ANDROID_SDK/platform-tools/adb"
 
@@ -76,6 +84,7 @@ while true; do
     echo -e ""
     echo -e "${CYAN}╔═══════════════════════════════════════════════╗${NC}"
     echo -e "${CYAN}║${NC}${BOLD}     🚀 Android Emulator Launcher              ${NC}${CYAN}║${NC}"
+    echo -e "${CYAN}║${NC}${DIM}     by Nunu Nugraha                          ${NC}${CYAN}║${NC}"
     echo -e "${CYAN}╚═══════════════════════════════════════════════╝${NC}"
     echo -e ""
 
@@ -153,6 +162,14 @@ while true; do
         echo -ne "${CYAN}${BOLD}Tekan 0 untuk exit, atau Enter untuk refresh: ${NC}"
         read -r choice
         if [ "$choice" = "0" ]; then
+            echo -e ""
+            echo -e "${DIM}───────────────────────────────────────────────${NC}"
+            echo -e "${DIM}  oleh ${NC}${BOLD}Nunu Nugraha${NC}"
+            echo -e "${DIM}  Support:${NC}"
+            echo -e "  ${YELLOW}☕ Saweria${NC}   ${DIM}→${NC} ${CYAN}https://saweria.co/nunugraha17${NC}"
+            echo -e "  ${YELLOW}☕ BMC${NC}       ${DIM}→${NC} ${CYAN}https://www.buymeacoffee.com/nunutech401${NC}"
+            echo -e "${DIM}───────────────────────────────────────────────${NC}"
+            echo -e ""
             echo -e "${DIM}👋 Bye!${NC}"
             exit 0
         fi
@@ -166,6 +183,14 @@ while true; do
 
         # Exit option
         if [ "$choice" = "0" ]; then
+            echo -e ""
+            echo -e "${DIM}───────────────────────────────────────────────${NC}"
+            echo -e "${DIM}  oleh ${NC}${BOLD}Nunu Nugraha${NC}"
+            echo -e "${DIM}  Support:${NC}"
+            echo -e "  ${YELLOW}☕ Saweria${NC}   ${DIM}→${NC} ${CYAN}https://saweria.co/nunugraha17${NC}"
+            echo -e "  ${YELLOW}☕ BMC${NC}       ${DIM}→${NC} ${CYAN}https://www.buymeacoffee.com/nunutech401${NC}"
+            echo -e "${DIM}───────────────────────────────────────────────${NC}"
+            echo -e ""
             echo -e "${DIM}👋 Bye!${NC}"
             exit 0
         fi
@@ -209,6 +234,14 @@ while true; do
     read -r next_action
 
     if [ "$next_action" = "0" ]; then
+        echo -e ""
+        echo -e "${DIM}───────────────────────────────────────────────${NC}"
+        echo -e "${DIM}  oleh ${NC}${BOLD}Nunu Nugraha${NC}"
+        echo -e "${DIM}  Support:${NC}"
+        echo -e "  ${YELLOW}☕ Saweria${NC}   ${DIM}→${NC} ${CYAN}https://saweria.co/nunugraha17${NC}"
+        echo -e "  ${YELLOW}☕ BMC${NC}       ${DIM}→${NC} ${CYAN}https://www.buymeacoffee.com/nunutech401${NC}"
+        echo -e "${DIM}───────────────────────────────────────────────${NC}"
+        echo -e ""
         echo -e "${DIM}👋 Bye! Emulator tetap berjalan.${NC}"
         exit 0
     fi
