@@ -1,8 +1,8 @@
-# 🚀 RunEmulator — Android Emulator Launcher
+# 🚀 RunEmulator — Device Launcher
 
-> **Launch Android emulators from your terminal, no Android Studio needed!**
+> **Launch Android Emulators & iOS Simulators from your terminal, no IDE needed!**
 
-A lightweight, self-contained Bash script that automatically detects all available Android Virtual Devices (AVDs) and lets you launch them interactively from the terminal. Perfect for developers who want to quickly spin up emulators without opening Android Studio.
+A lightweight, self-contained Bash script that automatically detects all available Android Virtual Devices (AVDs) and iOS Simulators, then lets you launch them interactively from the terminal. Perfect for developers who want to quickly spin up emulators/simulators without opening Android Studio or Xcode.
 
 <p align="center">
   <br/>
@@ -17,33 +17,43 @@ A lightweight, self-contained Bash script that automatically detects all availab
 
 ## ✨ Features
 
-- 🔍 **Auto-detect** — Automatically discovers all AVDs configured on your machine
-- �️ **Cross-platform** — Works on both **macOS** and **Linux** out of the box
-- �📱 **Interactive menu** — Clean, colorful terminal UI to select emulators
-- 🟢 **Running indicator** — Shows which emulators are already running
-- 🔄 **Multi-launch** — Launch multiple emulators in one session
-- 🚫 **Duplicate prevention** — Prevents launching the same emulator twice
+- 🔍 **Auto-detect** — Automatically discovers all Android AVDs and iOS Simulators
+- 🤖 **Android Emulators** — Full support for Android Virtual Devices
+- 🍎 **iOS Simulators** — Full support for iOS Simulators (macOS only, requires Xcode)
+- 🖥️ **Cross-platform** — Works on both **macOS** and **Linux** out of the box
+- 📱 **Interactive menu** — Clean, colorful terminal UI to select devices
+- 🟢 **Running indicator** — Shows which devices are already running
+- 🔄 **Multi-launch** — Launch multiple devices in one session
+- 🚫 **Duplicate prevention** — Prevents launching the same device twice
 - 🎨 **Pretty output** — Colored terminal output with emojis for a modern feel
-- ⚡ **Zero dependencies** — Only requires Android SDK (which you already have!)
+- ⚡ **Zero dependencies** — Only requires Android SDK and/or Xcode (which you already have!)
+- 📂 **Grouped by runtime** — iOS Simulators are organized by iOS version
 
 ---
 
 ## 📋 Prerequisites
 
+### For Android Emulators
 - **Android SDK** installed with at least one AVD configured
-- **Bash** shell (version 3.2+)
 - At least one Android Virtual Device (AVD) created via Android Studio Device Manager
 
-> 💡 The script auto-detects your OS and uses the correct default SDK path. You can also override it by setting `ANDROID_HOME`.
+### For iOS Simulators (macOS only)
+- **Xcode** installed with at least one simulator configured
+- **Command Line Tools** installed (`xcode-select --install`)
+
+### General
+- **Bash** shell (version 3.2+)
+
+> 💡 The script auto-detects available platforms. If you only have Android SDK, it shows only Android devices. If you only have Xcode, it shows only iOS simulators. If you have both — you get everything!
 
 ---
 
 ## 🖥️ Platform Compatibility
 
-| Platform | Status | Notes |
-|----------|--------|-------|
-| **macOS** | ✅ Supported | Double-click `RunEmu.command` or run `./run_emulator.sh` |
-| **Linux** | ✅ Supported | Run `./run_emulator.sh` in terminal |
+| Platform | Android Emulators | iOS Simulators | Notes |
+|----------|:--:|:--:|-------|
+| **macOS** | ✅ | ✅ | Double-click `RunEmu.command` or run `./run_emulator.sh` |
+| **Linux** | ✅ | ❌ | Run `./run_emulator.sh` in terminal (no Xcode on Linux) |
 
 ---
 
@@ -54,7 +64,7 @@ A lightweight, self-contained Bash script that automatically detects all availab
 **Option 1: Double-click**
 1. Open Finder and navigate to the project folder
 2. Double-click `RunEmu.command`
-3. Select an emulator from the menu — done!
+3. Select a device from the menu — done!
 
 **Option 2: Terminal**
 ```bash
@@ -81,55 +91,77 @@ chmod +x run_emulator.sh
 
 ```
 ╔═══════════════════════════════════════════════╗
-║     🚀 Android Emulator Launcher              ║
+║     🚀 Device Launcher                       ║
+║     Android Emulators & iOS Simulators        ║
+║     by Nunu Nugraha                           ║
 ╚═══════════════════════════════════════════════╝
 
-📱 Available Emulators:
+🤖 Android Emulators (3 devices)
 ───────────────────────────────────────────────
   [1]  📲  Pixel 9 API 35
   [2]  📲  Pixel 7 Pro API 34               🟢 RUNNING
   [3]  📱  Medium Phone API 35
+
+🍎 iOS Simulators (6 devices)
+───────────────────────────────────────────────
+  ▸ iOS 18.3
+    [4]  📱  iPhone 16 Pro
+    [5]  📱  iPhone 16 Pro Max
+    [6]  📟  iPad Pro 11-inch (M4)
+  ▸ iOS 17.2
+    [7]  📱  iPhone 15 Pro
+    [8]  📱  iPhone 15 Pro Max                🟢 RUNNING
+    [9]  📟  iPad Air (5th generation)
 ───────────────────────────────────────────────
   [0]  ❌  Exit
 ───────────────────────────────────────────────
 
-Pilih emulator [1-3]:
+Pilih device [1-9]:
 ```
 
-1. **Select an emulator** — Type the number and press Enter
-2. **Wait for launch** — The emulator starts in the background
+1. **Select a device** — Type the number and press Enter
+2. **Wait for launch** — The device starts in the background
 3. **Launch another** — Press Enter to go back to the menu, or `0` to exit
 
 ---
 
 ## 🔧 How It Works
 
+### Android Emulators
 1. Detects your OS (macOS/Linux) and locates the Android SDK automatically
 2. Runs `emulator -list-avds` to discover all configured AVDs
 3. Uses `adb devices` + `adb emu avd name` to detect running emulators
-4. Displays an interactive menu with running status indicators
-5. Launches the selected emulator in the background via `emulator -avd <name>`
-6. Loops back to the menu for launching additional emulators
+4. Launches the selected emulator via `emulator -avd <name>`
+
+### iOS Simulators
+1. Uses `xcrun simctl list devices available -j` to discover all available simulators
+2. Parses the JSON output to get device names, UDIDs, states, and runtimes
+3. Groups simulators by iOS runtime version for easy navigation
+4. Boots the selected simulator via `xcrun simctl boot <udid>`
+5. Opens the Simulator.app to display the UI
 
 ---
 
 ## 🤔 FAQ
 
-### Will it auto-detect emulators on another laptop?
-**Yes!** The script dynamically discovers AVDs at runtime using `emulator -list-avds`. It does **not** hardcode any emulator names. As long as the other laptop has Android SDK installed and at least one AVD created, it just works.
+### Will it auto-detect devices on another Mac?
+**Yes!** The script dynamically discovers AVDs and simulators at runtime. It does **not** hardcode any device names. As long as the other Mac has Android SDK and/or Xcode installed with at least one device configured, it just works.
 
 ### Can I just share the single file?
 **Yes!** The script is fully self-contained. You can share just `RunEmu.command` (or `run_emulator.sh`) — no other files needed. On macOS the `.command` file is double-clickable. On Linux, rename it or run it directly with `bash RunEmu.command`.
 
-### Can I run multiple emulators at the same time?
-**Yes!** After launching one emulator, press Enter to return to the menu and launch another. Already-running emulators are marked with 🟢 and can't be selected again.
+### Can I run multiple devices at the same time?
+**Yes!** After launching one device, press Enter to return to the menu and launch another. Already-running devices are marked with 🟢 and can't be selected again.
 
-### The script says "emulator not found"
-Make sure your Android SDK is installed. The script checks these default paths:
-- **macOS:** `$HOME/Library/Android/sdk`
-- **Linux:** `$HOME/Android/Sdk`
+### The script says "No Android SDK or Xcode found!"
+Make sure at least one of these is installed:
+- **Android SDK:** Auto-detected at `$HOME/Library/Android/sdk` (macOS) or `$HOME/Android/Sdk` (Linux)
+- **Xcode:** Install from App Store, then run `xcode-select --install`
 
-Or override with: `export ANDROID_HOME="/your/custom/path"`
+Or override Android SDK path with: `export ANDROID_HOME="/your/custom/path"`
+
+### Can I use iOS Simulators on Linux?
+**No.** iOS Simulators require Xcode, which is only available on macOS. On Linux, only Android Emulators are supported.
 
 ---
 
@@ -137,16 +169,17 @@ Or override with: `export ANDROID_HOME="/your/custom/path"`
 
 ```
 RunEmulator/
-├── run_emulator.sh     # Main script (for terminal use)
-├── RunEmu.command       # macOS double-clickable launcher (same script)
-└── README.md            # This file
+├── run_emulator.sh      # Main script (for terminal use)
+├── RunEmu.command        # macOS double-clickable launcher (same script)
+├── LICENSE               # MIT License
+└── README.md             # This file
 ```
 
 ---
 
 ## 📄 License
 
-This project is open source. Feel free to use, modify, and distribute.
+This project is licensed under the [MIT License](LICENSE). Feel free to use, modify, and distribute.
 
 ---
 
